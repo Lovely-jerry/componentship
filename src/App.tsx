@@ -1,23 +1,16 @@
 import React from 'react';
 
+import Button from './components/Button/button'
+
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>hello world</h1>
-        <h2>hello world</h2>
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button autoFocus classnames="custom" />
+      <Button btnType='primary' onClick={()=>console.log('123456')}>primary btn</Button>
+      <Button size='lg' btnType="danger">lg btn</Button>
+      <Button disabled size='sm'>sm btn</Button>
+      <Button btnType='link'target='_blank' href='http://www.baidu.com'>百度</Button>
+      <Button btnType='link' href='http://www.goole.com' disabled>谷歌</Button>
     </div>
   );
 }

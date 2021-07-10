@@ -1,1 +1,36 @@
 // 全局mixins
+@mixin btn-size($padding-y,$padding-x,$border-radius,$font-size){
+    padding: $padding-y $padding-x;
+    border-radius: $border-radius;
+    font-size: $font-size;
+}
+
+@mixin btn-type(
+    $color,
+    $bg-color,
+    $border,
+    $hover-bg-color:lighten($bg-color,7.5%),
+    $hover-border: lighten($border, 10%),
+    $hover-color:$color
+    ) {
+    color: $color;
+    background-color: $bg-color;
+    border-color: $border;
+    &:hover{
+        color: $hover-color;
+        background-color: $hover-bg-color;
+        border-color: $hover-border;
+    }
+    &:focus,
+    &.focus{
+        color: $hover-color;
+        background-color: $hover-bg-color;
+        border-color: $hover-border;
+    }
+    &:disabled,
+    &.disabled{
+        color: $color;
+        background-color: $bg-color;
+        border-color: $border;
+    }
+}
