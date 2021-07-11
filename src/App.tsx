@@ -1,16 +1,21 @@
 import React from 'react';
-
-import Button from './components/Button/button'
+import Menu from './components/Menu/menu'
+import MenuItem from './components/Menu/menuItem'
 
 function App() {
   return (
     <div className="App">
-      <Button autoFocus classnames="custom" />
-      <Button btnType='primary' onClick={()=>console.log('123456')}>primary btn</Button>
-      <Button size='lg' btnType="danger">lg btn</Button>
-      <Button disabled size='sm'>sm btn</Button>
-      <Button btnType='link'target='_blank' href='http://www.baidu.com'>百度</Button>
-      <Button btnType='link' href='http://www.goole.com' disabled>谷歌</Button>
+      <Menu defaultIndex={0} mode='vertical' onSelect={(index)=>console.log(index)}>
+        <MenuItem index={0}>
+          cool link 1
+        </MenuItem>
+        <MenuItem disabled index={1}>
+          cool link 2
+        </MenuItem>
+        <MenuItem index={2}>
+          cool link 3
+        </MenuItem>
+      </Menu>
     </div>
   );
 }
