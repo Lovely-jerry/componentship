@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react'
 import classNames from 'classnames'
-import {MenuItemProps} from './menuItem'
+import { MenuItemProps } from './menuItem'
 
 type MenuMode = 'horizontal' | 'vertical'
 type selectedCallBack = (selectedIndex: number) => void
@@ -18,6 +18,7 @@ export interface MenuProps {
 interface MenuContextProps {
     index: number;
     onSelect?: selectedCallBack;
+    mode?:MenuMode;
 }
 
 //8. 定义context上下文
@@ -30,7 +31,8 @@ const Menu: React.FC<MenuProps> = (props) => {
     const [currentIndex, setActive] = useState(defaultIndex)
     // 3.定义需要的className
     const classes = classNames("viking-menu", className, {
-        'menu-vertical': mode === 'vertical'
+        'menu-vertical': mode === 'vertical',
+        'menu-horizontal': mode !== 'vertical'
     })
 
     //11. 保存用户选中的muenItem和调用onSelect函数
@@ -42,18 +44,19 @@ const Menu: React.FC<MenuProps> = (props) => {
     // 9.定义往子组件传递的值
     const passedContext: MenuContextProps = {
         index: currentIndex ? currentIndex : 0,
-        onSelect: handleSelect
+        onSelect: handleSelect,
+        mode
     }
 
     // 11.判断子组件是否是MenuItem,且将MenuItem中的index改成非传字段
-    const renderChildren=()=>{
-        return React.Children.map(children,(child,index)=>{
-            const childElement=child as React.FunctionComponentElement<MenuItemProps>;
-            const {displayName}=childElement.type;
-            if(displayName==='MenuItem'){
+    const renderChildren = () => {
+        return React.Children.map(children, (child, index) => {
+            const childElement = child as React.FunctionComponentElement<MenuItemProps>;
+            const { displayName } = childElement.type;
+            if (displayName === 'MenuItem'||displayName === 'SubMenu') {
                 // return child
-                return React.cloneElement(childElement,{index})
-            }else{
+                return React.cloneElement(childElement, { index })
+            } else {
                 console.error("Warning: Menu has a child which is not a MenuItem component");
             }
 
