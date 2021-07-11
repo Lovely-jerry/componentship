@@ -5,7 +5,7 @@ import { MenuItemProps } from './menuItem'
 
 // 1.定义submenu中props的类型接口
 interface SubMenuProps {
-    index?: number;
+    index?: string;
     className?: string;
     title?: string;
 }
@@ -13,9 +13,13 @@ interface SubMenuProps {
 // 2.定义SubMenu函数
 const SubMenu: React.FC<SubMenuProps> = (props) => {
     const { index, className, title, children } = props;
-    // 4.定义控制下拉菜单的显示与隐藏变量
-    const [menuOpen, setOpen] = useState(false)
     const context = useContext(MenuContext);
+    const isOpenSubMenu = context.defaultOpenSubMenus as Array<String>
+    // 9.定义默认展开的subMenu菜单
+    const isOpend = (index && context.mode === 'vertical') ? isOpenSubMenu.includes(index) : false
+    // 4.定义控制下拉菜单的显示与隐藏变量
+    const [menuOpen, setOpen] = useState(isOpend)
+
     const classes = classNames('menu-item submenu-item', className, {
         'is-actived': context.index === index
     })
@@ -26,13 +30,13 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
         setOpen(!menuOpen)
     }
     // 6.定义鼠标进入和离开显示或隐藏下拉菜单事件
-    let timeId:any;
+    let timeId: any;
     const handleMouse = (e: React.MouseEvent, toggle: boolean) => {
         clearTimeout(timeId)
         e.preventDefault();
-        timeId=setTimeout(()=>{
+        timeId = setTimeout(() => {
             setOpen(toggle)
-        },300)
+        }, 300)
     }
 
     // 7.根据Menu组件传递过来的Mode类型控制subMenu菜单显示与隐藏的方式
@@ -51,10 +55,13 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
         const subMenuClasses = classNames('viking-submenu', {
             'menu-opened': menuOpen
         })
-        const childrenComponent = React.Children.map(children, (child, index) => {
+        const childrenComponent = React.Children.map(children, (child, i) => {
             const childElement = child as React.FunctionComponentElement<MenuItemProps>;
             if (childElement.type.displayName === 'MenuItem') {
-                return childElement;
+                // return childElement;
+                return React.cloneElement(childElement, {
+                    index: `${index}-${i}`
+                })
             } else {
                 console.error("Warning: SubMenu has a child which is not a MenuItem component");
             }

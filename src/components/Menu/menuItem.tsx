@@ -4,7 +4,7 @@ import { MenuContext } from './menu'
 
 // 1.定义menuIten需要的参数类型
 export interface MenuItemProps {
-    index?: number;
+    index?: string;
     className?: string;
     disabled?: boolean;
     styles?: React.CSSProperties;
@@ -20,7 +20,7 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
         'is-actived': context.index === index
     })
     const handleClick = () => {
-        if (context.onSelect && !disabled && index) {
+        if (context.onSelect && !disabled && (typeof index === 'string')) {
             context.onSelect(index)
         }
     }
