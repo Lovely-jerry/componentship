@@ -5,7 +5,7 @@ type MenuMode = 'horizontal' | 'vertical'
 type selectedCallBack = (selectedIndex: number) => void
 
 // 1.定义menu组件需要参数的类型
-interface MenuProps {
+export interface MenuProps {
     defaultIndex?: number;
     className?: string;
     mode?: MenuMode;
@@ -45,7 +45,7 @@ const Menu: React.FC<MenuProps> = (props) => {
     }
 
     //4. 返回menu组件
-    return (<ul className={classes} style={styles}>
+    return (<ul className={classes} style={styles} data-testid='test-menu'>
         <MenuContext.Provider value={passedContext}>
             {children}
         </MenuContext.Provider>
