@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import classNames from 'classnames'
 import { MenuContext } from "./menu";
 import { MenuItemProps } from './menuItem'
+import Icon from '../Icon/icon'
 
 // 1.定义submenu中props的类型接口
 interface SubMenuProps {
@@ -21,7 +22,9 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
     const [menuOpen, setOpen] = useState(isOpend)
 
     const classes = classNames('menu-item submenu-item', className, {
-        'is-actived': context.index === index
+        'is-actived': context.index === index,
+        'is-opend': menuOpen,
+        'is-vertical': context.mode === 'vertical'
     })
 
     // 5.定义触发下拉菜单显示与隐藏的点击事件
@@ -72,7 +75,10 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
     return (
         // 8.将定义好的值传递到元素上
         <li className={classes} {...mouseEvent}>
-            <div className="submenu-title" {...clickEvent}>{title}</div>
+            <div className="submenu-title" {...clickEvent}>
+                {title}
+                <Icon icon='angle-down' className='arrow-icon' />
+            </div>
             {renderChildren()}
         </li>
     )

@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="App">
       <Icon size='10x' icon='coffee' theme='info' />
-      <Menu defaultIndex='0' defaultOpenSubMenus={['2']} onSelect={(index) => console.log(index)}>
+      <Menu defaultIndex='0' mode='vertical' defaultOpenSubMenus={['2']} onSelect={(index) => console.log(index)}>
         <MenuItem>
           cool link 1
         </MenuItem>
