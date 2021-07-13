@@ -5,10 +5,13 @@ import Menu from './components/Menu/menu'
 import MenuItem from './components/Menu/menuItem'
 import SubMenu from './components/Menu/subMenu';
 import Icon from './components/Icon/icon'
+import Button from './components/Button/button'
+import Transition from './components/Transition/transition'
 
 library.add(fas);
 
 function App() {
+  const [show, setShow] = React.useState(false)
   return (
     <div className="App">
       <Icon size='10x' icon='coffee' theme='info' />
@@ -27,6 +30,29 @@ function App() {
           cool link 3
         </MenuItem>
       </Menu>
+      <Button btnType="primary" onClick={() => setShow(!show)}>toggle</Button>
+      <Transition
+        in={show}
+        timeout={500}
+        animation='zoom-in-left'
+      >
+        <div>
+          <p>my name is alien</p>
+          <p>my name is alien</p>
+          <p>my name is alien</p>
+          <p>my name is alien</p>
+          <p>my name is alien</p>
+        </div>
+      </Transition>
+      <Transition
+        in={show}
+        timeout={300}
+        animation='zoom-in-bottom'
+        wrapper
+      >
+        <Button size='lg' btnType='danger'>i am a show button</Button>
+      </Transition>
+
     </div>
   );
 }
