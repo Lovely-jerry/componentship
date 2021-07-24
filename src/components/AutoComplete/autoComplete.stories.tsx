@@ -7,6 +7,11 @@ interface LakerPlayerProps {
     value: string;
     number: number;
 }
+interface GithubUserProps {
+    login: string;
+    url: string;
+    avatar_url: string;
+}
 
 const SimpleComplete = () => {
     //简单数据结构
@@ -29,20 +34,25 @@ const SimpleComplete = () => {
     const handleFetchValue = (query: string) => {
         return lakers.filter((name: string) => name.includes(query)).map(name => ({ value: name }))
     }
-    const handleFetchObjectValue = (query: string) => {
-        return lakersWithNumber.filter((player) => player.value.includes(query))
+    const handleFetchPromiseValue = (query: string) => {
+        return fetch(`https://api.github.com/search/users?q=${query}`)
+            .then(res => res.json())
+            .then(({ items }) => {
+                console.log('items', items);
+                const formatItems = items.slice(0, 10).map((item) => ({ value: item.login, ...item }))
+                return formatItems
+            })
     }
-    const renderOptions = (item: DataSourceType<LakerPlayerProps>) => {
+    const renderOption = (item: DataSourceType<GithubUserProps>) => {
         return <>
-            <h3>name:{item.value}</h3>
-            <p>number:{item.number}</p>
+            <h3>name:{item.login}</h3>
+            <p>url:{item.url}</p>
         </>
     }
     return <AutoComplete
-        fetchSuggest={handleFetchValue}
+        fetchSuggest={handleFetchPromiseValue}
         onSelect={action('selected')}
-        // fetchSuggest={handleFetchObjectValue}
-        // renderOptions={renderOptions}
+        renderOptions={renderOption}
     />
 }
 

@@ -1,5 +1,6 @@
 import React, { useState, FC, ChangeEvent, ReactElement } from 'react'
 import { Input, InputProps } from "../Input/input"
+import Icon from '../Icon/icon'
 
 interface DataSourceObj {
     value: string;
@@ -9,7 +10,7 @@ export type DataSourceType<T = {}> = T & DataSourceObj
 
 // 1.定义autoComplete组件参数的类型
 export interface AutoCompleteProps extends Omit<InputProps, 'onSelect'> {
-    fetchSuggest: (str: string) => DataSourceType[];
+    fetchSuggest: (str: string) => DataSourceType[] | Promise<DataSourceObj[]>;
     onSelect?: (item: DataSourceType) => void;
     renderOptions?: (item: DataSourceType) => ReactElement;
 }
@@ -22,6 +23,8 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
     const [inputValue, setInputValue] = useState(value)
     // 2.2定义搜索下拉框中的值
     const [suggestions, setSuggestions] = useState<DataSourceType[]>([])
+    // 显示loading
+    const [loading, setLoading] = useState(false)
 
     // 3.保存用户输入的值
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +32,18 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
         setInputValue(value)
         if (value) {
             const result = fetchSuggest(value)
-            setSuggestions(result)
+            //判断是异步请求还是同步的数据处理
+            if (result instanceof Promise) {
+                console.log('triggered');
+                setLoading(true)
+                result.then(res => {
+                    setSuggestions(res)
+                    setLoading(false)
+                })
+            } else {
+                setSuggestions(result)
+            }
+
         } else {
             setSuggestions([])
         }
@@ -65,7 +79,9 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
             onChange={handleInputChange}
             {...restProps}
         />
-        {suggestions.length > 0 && generateDropdown()}
+        {loading && <Icon icon='spinner' spin />}
+        {/* {suggestions.length > 0 && generateDropdown()} */}
+        {Array.isArray(suggestions) && generateDropdown()}
     </div>)
 }
 
