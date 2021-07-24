@@ -7,6 +7,7 @@ import SubMenu from './components/Menu/subMenu';
 import Icon from './components/Icon/icon'
 import Button from './components/Button/button'
 import Transition from './components/Transition/transition'
+import Input from './components/Input/input'
 
 library.add(fas);
 
@@ -14,6 +15,11 @@ function App() {
   const [show, setShow] = React.useState(false)
   return (
     <div className="App">
+      <Input placeholder='请输入' />
+      <Input size='lg' disabled={true} placeholder='我是被禁用的' />
+      <Input icon='coffee' placeholder='我是图标输入框' />
+      <Input placeholder='我是前缀输入框' prepand='https://' />
+      <Input placeholder='我是后缀输入框' append='.com' />
       <Icon size='10x' icon='coffee' theme='info' />
       <Menu defaultIndex='0' defaultOpenSubMenus={['2']} onSelect={(index) => console.log(index)}>
         <MenuItem>
