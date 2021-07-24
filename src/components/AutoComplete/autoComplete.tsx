@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { Input, InputProps } from "../Input/input"
 import Icon from '../Icon/icon'
 import useDebounce from '../../hooks/useDebounce'
+import useClickOutside from '../../hooks/useClickOutside'
 
 interface DataSourceObj {
     value: string;
@@ -32,9 +33,13 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
 
     //保存状态（用来区分用户是input输入框中输入值，还是点击下拉选择搜索结果）
     const triggerSearch = useRef(false)
+    const componentRef = useRef<HTMLDivElement>(null)
 
     // 使用防抖函数，防抖函数返回的值
     const debouncedValue = useDebounce(inputValue, 600)
+
+    // 调用自定义hooks，实现点击元素外关闭搜索结果弹窗
+    useClickOutside(componentRef,()=>{setSuggestions([])})
 
     useEffect(() => {
         if (debouncedValue && triggerSearch.current) {
@@ -122,7 +127,7 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
         setHighlightIndex(index)
     }
 
-    return (<div className='viking-auto-complete'>
+    return (<div className='viking-auto-complete' ref={componentRef}>
         <Input
             value={inputValue}
             onChange={handleInputChange}
