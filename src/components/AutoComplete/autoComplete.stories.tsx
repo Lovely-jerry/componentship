@@ -52,7 +52,7 @@ const SimpleComplete = () => {
     return <AutoComplete
         fetchSuggest={handleFetchPromiseValue}
         onSelect={action('selected')}
-        renderOptions={renderOption}
+        // renderOptions={renderOption}
     />
 }
 
