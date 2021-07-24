@@ -1,6 +1,7 @@
-import React, { useState, FC, ChangeEvent, ReactElement } from 'react'
+import React, { useState, FC, ChangeEvent, ReactElement, useEffect } from 'react'
 import { Input, InputProps } from "../Input/input"
 import Icon from '../Icon/icon'
+import useDebounce from '../../hooks/useDebounce'
 
 interface DataSourceObj {
     value: string;
@@ -20,33 +21,37 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
     const { fetchSuggest, onSelect, value, renderOptions, ...restProps } = props;
 
     // 2.1定义input输入框中的值
-    const [inputValue, setInputValue] = useState(value)
+    const [inputValue, setInputValue] = useState(value as string)
     // 2.2定义搜索下拉框中的值
     const [suggestions, setSuggestions] = useState<DataSourceType[]>([])
     // 显示loading
     const [loading, setLoading] = useState(false)
 
-    // 3.保存用户输入的值
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim()
-        setInputValue(value)
-        if (value) {
-            const result = fetchSuggest(value)
-            //判断是异步请求还是同步的数据处理
+    // 使用防抖函数，防抖函数返回的值
+    const debouncedValue = useDebounce(inputValue, 600)
+
+    useEffect(() => {
+        if (debouncedValue) {
+            const result = fetchSuggest(debouncedValue)
             if (result instanceof Promise) {
                 console.log('triggered');
                 setLoading(true)
-                result.then(res => {
+                result.then((res) => {
                     setSuggestions(res)
                     setLoading(false)
                 })
             } else {
                 setSuggestions(result)
             }
-
         } else {
             setSuggestions([])
         }
+    }, [debouncedValue])
+
+    // 3.保存用户输入的值
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.trim()
+        setInputValue(value)
     }
 
     // 4.定义搜索结果下来组件
