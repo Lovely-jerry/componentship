@@ -39,7 +39,7 @@ const SimpleComplete = () => {
             .then(res => res.json())
             .then(({ items }) => {
                 console.log('items', items);
-                const formatItems = items.slice(0, 10).map((item) => ({ value: item.login, ...item }))
+                const formatItems = items.slice(0, 10).map((item: any) => ({ value: item.login, ...item }))
                 return formatItems
             })
     }
@@ -50,9 +50,10 @@ const SimpleComplete = () => {
         </>
     }
     return <AutoComplete
-        fetchSuggest={handleFetchPromiseValue}
+        fetchSuggest={handleFetchValue}
+        // fetchSuggest={handleFetchPromiseValue}
         onSelect={action('selected')}
-        // renderOptions={renderOption}
+    // renderOptions={renderOption}
     />
 }
 
