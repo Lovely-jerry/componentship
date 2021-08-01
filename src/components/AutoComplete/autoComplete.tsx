@@ -4,6 +4,7 @@ import { Input, InputProps } from "../Input/input"
 import Icon from '../Icon/icon'
 import useDebounce from '../../hooks/useDebounce'
 import useClickOutside from '../../hooks/useClickOutside'
+import Transition from '../Transition/transition'
 
 interface DataSourceObj {
     value: string;
@@ -39,7 +40,7 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
     const debouncedValue = useDebounce(inputValue, 600)
 
     // 调用自定义hooks，实现点击元素外关闭搜索结果弹窗
-    useClickOutside(componentRef,()=>{setSuggestions([])})
+    useClickOutside(componentRef, () => { setSuggestions([]) })
 
     useEffect(() => {
         if (debouncedValue && triggerSearch.current) {
@@ -69,17 +70,27 @@ export const AutoComplete: FC<AutoCompleteProps> = (props) => {
 
     // 4.定义搜索结果下来组件
     const generateDropdown = () => {
-        return (<ul>
-            {suggestions.map((item, index) => {
-                const classes = classNames('suggestion-item', {
-                    'item-highlighted': highlightIndex === index
-                })
-                return (<li key={index} className={classes} onClick={() => handleSelect(item)}>
-                    {/* {item} */}
-                    {renderTemplate(item)}
-                </li>)
-            })}
-        </ul>)
+        return (
+            <Transition 
+            timeout={500} 
+            in={!!suggestions.length ||loading}
+            animation='zoom-in-top'
+            >
+                <ul>
+                {suggestions.map((item, index) => {
+                    const classes = classNames('suggestion-item', {
+                        'item-highlighted': highlightIndex === index
+                    })
+                    return (
+                        <li key={index} className={classes} onClick={() => handleSelect(item)}>
+                            {/* {item} */}
+                            {renderTemplate(item)}
+                        </li>
+                    )
+                })}
+            </ul>
+             </Transition>
+            )
     }
 
     //5.定义点击下拉搜索结果函数
