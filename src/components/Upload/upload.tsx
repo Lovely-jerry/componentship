@@ -5,15 +5,17 @@ import Button from '../Button/button'
 // 定义upload组件需要参数的类型
 export interface UploadProps {
     action: string;
+    beforeUpload?: (file: File) => boolean | Promise<File>;
     onProgress?: (percentage: number, file: File) => void;
     onSuccess?: (data: any, file: File) => void;
     onError?: (err: any, file: File) => void;
+    onChange?: (file: File) => void;
 }
 
 // 定义upload组件
 export const Upload: FC<UploadProps> = (props) => {
 
-    const { action, onProgress, onSuccess, onError } = props;
+    const { action, beforeUpload, onProgress, onSuccess, onError, onChange } = props;
 
     // 获取input元素的dom
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -42,26 +44,45 @@ export const Upload: FC<UploadProps> = (props) => {
         // 类数组转化成数组的方式 使用..., 或者 Array.from()
         let postFiles = Array.from(files)
         postFiles.forEach(file => {
-            const formData = new FormData()
-            formData.append(file.name, file)
-
-            axios.post(action, formData, {
-                headers: {
-                    'Context-Type': 'multipart/form-data'
-                },
-                onUploadProgress: (e) => {
-                    let percentage = Math.round((e.loaded * 100) / e.total) || 0;
-                    if (percentage < 100) {
-                        !!onProgress && onProgress(percentage, file)
-                    }
+            if (!beforeUpload) {
+                post(file)
+            } else {
+                const result = beforeUpload(file);
+                if (result && result instanceof Promise) {
+                    result.then(processedFile => {
+                        post(processedFile)
+                    })
+                } else if (result !== false) {
+                    post(file)
                 }
-            }).then(resp => {
-                console.log('new_resp', resp);
-                !!onSuccess && onSuccess(resp.data, file)
-            }).catch(err => {
-                console.error('new_err', err);
-                !!onError && onError(err, file)
-            })
+            }
+
+        })
+    }
+
+    //定义上传文件并请求接口
+    const post = (file: File) => {
+        const formData = new FormData()
+        formData.append(file.name, file)
+
+        axios.post(action, formData, {
+            headers: {
+                'Context-Type': 'multipart/form-data'
+            },
+            onUploadProgress: (e) => {
+                let percentage = Math.round((e.loaded * 100) / e.total) || 0;
+                if (percentage < 100) {
+                    !!onProgress && onProgress(percentage, file)
+                }
+            }
+        }).then(resp => {
+            console.log('new_resp', resp);
+            !!onSuccess && onSuccess(resp.data, file)
+        }).catch(err => {
+            console.error('new_err', err);
+            !!onError && onError(err, file)
+        }).finally(() => {
+            !!onChange && onChange(file)
         })
     }
     return <div className='viking-upload-component'>
