@@ -108,7 +108,7 @@ export const Upload: FC<UploadProps> = (props) => {
 
         axios.post(action, formData, {
             headers: {
-                'Context-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data'
             },
             onUploadProgress: (e) => {
                 let percentage = Math.round((e.loaded * 100) / e.total) || 0;
