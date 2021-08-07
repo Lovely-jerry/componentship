@@ -56,6 +56,11 @@ function App() {
         // beforeUpload={filePromise}
         onChange={(file) => console.log('我被出发了')}
         onRemove={(_file)=>{console.log('我是被删除的哪一项',_file) }}
+        name='fileName'
+        data={{key:'value'}}
+        headers={{'X-Powered-By':'vikingship'}}
+        multiple
+        accept='.ts'
       />
     </>
   );

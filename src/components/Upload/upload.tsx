@@ -27,12 +27,39 @@ export interface UploadProps {
     onError?: (err: any, file: File) => void;
     onChange?: (file: File) => void;
     onRemove?: (file: UploadFile) => void;
+    // 添加自定义header
+    headers?: { [key: string]: any };
+    // 添加自定义name
+    name?: string;
+    // 添加自定义 post formData
+    data?: { [key: string]: any };
+    // 添加发送时是否携带 cookie (withCredentials)
+    withCredentials?: boolean;
+    //给表单元素添加multiple属性（是否可以多选）
+    multiple?: boolean;
+    // 给表单元素添加accept属性
+    accept?: string;
 }
 
 // 定义upload组件
 export const Upload: FC<UploadProps> = (props) => {
 
-    const { action, beforeUpload, onProgress, onSuccess, onError, onChange, defaultFileList, onRemove } = props;
+    const {
+        action,
+        beforeUpload,
+        onProgress,
+        onSuccess,
+        onError,
+        onChange,
+        defaultFileList,
+        onRemove,
+        data,
+        headers,
+        withCredentials,
+        name,
+        multiple,
+        accept
+    } = props;
 
     // 获取input元素的dom
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -102,14 +129,22 @@ export const Upload: FC<UploadProps> = (props) => {
             percent: 0,
             raw: file
         }
-        setFileList([_file, ...fileList])
+        // setFileList([_file, ...fileList])
+        setFileList(prevList=>[_file,...prevList])
         const formData = new FormData()
-        formData.append(file.name, file)
+        formData.append((name || 'file'), file)
 
+        if (data) {
+            Object.keys(data).forEach((item) => {
+                formData.append(item, data[item])
+            })
+        }
         axios.post(action, formData, {
             headers: {
+                ...headers,
                 'Content-Type': 'multipart/form-data'
             },
+            withCredentials,
             onUploadProgress: (e) => {
                 let percentage = Math.round((e.loaded * 100) / e.total) || 0;
                 if (percentage < 100) {
@@ -151,9 +186,15 @@ export const Upload: FC<UploadProps> = (props) => {
             type='file'
             ref={fileInputRef}
             onChange={handleFileChange}
+            accept={accept}
+            multiple={multiple}
         />
         <UploadList fileList={fileList} onRemove={handleRemove} />
     </div>
+}
+
+Upload.defaultProps = {
+    name: 'file'
 }
 
 export default Upload;
