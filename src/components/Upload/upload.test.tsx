@@ -57,7 +57,6 @@ describe('test upload component', () => {
     })
     it('drag and drop files should works fine', async () => {
         mockedAxios.post.mockResolvedValue({ 'data': 'cool' })
-
         fireEvent.dragOver(uploadArea)
         expect(uploadArea).toHaveClass('is-dragover')
         fireEvent.dragLeave(uploadArea)
