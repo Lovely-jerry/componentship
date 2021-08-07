@@ -1,0 +1,48 @@
+.viking-upload-component{
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.viking-upload-list{
+    list-style: none;
+    padding: 0;
+    max-width: 360px;
+    .viking-upload-list-item{
+        width: 100%;
+        height: 36px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-right: 6px;
+        transition: all .5s cubic-bezier(.55,0,.1,1);
+        .file-name {
+            margin-left: 5px;
+            margin-right: 40px;
+            svg {
+              margin-right: 5px;
+              color: $gray-500;
+            }
+          }
+        .file-name-error{
+            color: $danger;
+            svg{
+                color: $danger;
+            }
+        }
+        .file-status{
+            display: block;
+        }
+        .file-actions{
+            display: none;
+        }
+        &:hover{
+            background-color: $gray-200;
+            cursor: pointer;
+            .file-status{
+                display: none;
+            }
+            .file-actions{
+                display: block;
+            }
+        }
+    }
+}
