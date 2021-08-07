@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import Icon from './components/Icon/icon'
 import Upload, { UploadFile } from './components/Upload/upload'
 import { library, Library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -55,13 +56,18 @@ function App() {
         defaultFileList={defaultFileList}
         // beforeUpload={filePromise}
         onChange={(file) => console.log('我被出发了')}
-        onRemove={(_file)=>{console.log('我是被删除的哪一项',_file) }}
+        onRemove={(_file) => { console.log('我是被删除的哪一项', _file) }}
         name='fileName'
-        data={{key:'value'}}
-        headers={{'X-Powered-By':'vikingship'}}
+        data={{ key: 'value' }}
+        headers={{ 'X-Powered-By': 'vikingship' }}
         multiple
         accept='.ts'
-      />
+        darg
+      >
+        <Icon icon="upload" size="5x" theme="secondary" />
+        <br />
+        <p>Drag file over to upload</p>
+      </Upload>
     </>
   );
 }
