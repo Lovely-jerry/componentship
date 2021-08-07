@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect'
 import React from 'react'
 import axios from 'axios'
-import { render, RenderResult, fireEvent, waitFor } from '@testing-library/react'
+import { render, RenderResult, fireEvent, waitFor, createEvent } from '@testing-library/react'
 import { UploadProps, Upload } from './upload'
 
 jest.mock('../Icon/icon', () => {
@@ -14,7 +14,8 @@ const testProps: UploadProps = {
     action: 'fakeurl.com',
     onSuccess: jest.fn(),
     onChange: jest.fn(),
-    onRemove: jest.fn()
+    onRemove: jest.fn(),
+    darg: true
 }
 let wrapper: RenderResult, fileInput: HTMLInputElement, uploadArea: HTMLElement;
 // 要上传的文件
@@ -53,5 +54,25 @@ describe('test upload component', () => {
             status: 'success',
             name: 'test.png'
         }))
+    })
+    it('drag and drop files should works fine', async () => {
+        mockedAxios.post.mockResolvedValue({ 'data': 'cool' })
+
+        fireEvent.dragOver(uploadArea)
+        expect(uploadArea).toHaveClass('is-dragover')
+        fireEvent.dragLeave(uploadArea)
+        expect(uploadArea).not.toHaveClass('is-dragover')
+
+        const mockDropEvent = createEvent.drop(uploadArea)
+        Object.defineProperty(mockDropEvent, "dataTransfer", {
+            value: {
+                files: [testFile]
+            }
+        })
+        fireEvent(uploadArea, mockDropEvent)
+        await waitFor(() => {
+            expect(wrapper.queryByText('test.png')).toBeInTheDocument()
+        })
+        expect(testProps.onSuccess).toHaveBeenCalledWith('cool', testFile)
     })
 })
